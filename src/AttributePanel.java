@@ -87,14 +87,15 @@ class BrushPanel extends JPanel{
 		tabPane = new JTabbedPane();		
 		tabPane.addTab("Size & Shape", bt);
 		tabPane.addTab("Color", cp);
-		ChangeListener changeListener = new ChangeListener() {
-		      public void stateChanged(ChangeEvent changeEvent) {
-		        ((BrushTab)tabPane.getComponentAt(0)).updateBrush();
-		      }
-		};
-		tabPane.addChangeListener(changeListener);
 		tabPane.setPreferredSize(new Dimension(280,345));
-		
+
+		cp.hexCode.getDocument().addDocumentListener(new DocumentListener(){
+			public void changedUpdate(DocumentEvent arg0) {}
+			public void insertUpdate(DocumentEvent arg0) {
+				((BrushTab)tabPane.getComponentAt(0)).updateBrush();
+			}
+			public void removeUpdate(DocumentEvent arg0) {}			
+		});
 		add(new JPanel(){
 			public Dimension getPreferredSize(){
 				return new Dimension(280,30);
@@ -119,6 +120,9 @@ class BrushPanel extends JPanel{
 		
 		g.drawRoundRect(0,0, getPreferredSize().width-1, getPreferredSize().height-1, 10, 10);
 		setBackground(Color.LIGHT_GRAY);
+	}
+	
+	public void stateChanged(ChangeEvent e) {
 	}
 	
 	class BrushTab extends JPanel implements ChangeListener, MouseListener, MouseMotionListener{
@@ -830,6 +834,8 @@ class Slider extends JPanel implements MouseListener, MouseMotionListener{
 	}
 	public void mouseMoved(MouseEvent arg0) {}
 }
+
+
 
 
 

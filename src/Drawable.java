@@ -93,7 +93,7 @@ class Painting extends Drawable{
 		paintingImage = strokeImage;
 	}
 	public BufferedImage getImage(){
-		return stroke.getImage();
+		return stroke!=null ? stroke.getImage() : null;
 	}
 
 	class PaintStroke{
@@ -167,3 +167,6 @@ class Painting extends Drawable{
 		}
 	}
 }
+
+
+

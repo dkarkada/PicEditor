@@ -135,6 +135,9 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 	public void mouseReleased(MouseEvent e) {
 		if(currentTool==PAINT_TOOL){
+			Painting p = (Painting)(items.get(items.size()-1));
+			p.completeStroke();
+			permLayer.getGraphics().drawImage(p.getImage(), 0, 0, null);
 			mouseLayer.getGraphics().drawImage(brush.brushImage, e.getX()-75, e.getY()-75, null);
 		}
 		repaint();
@@ -152,8 +155,6 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 	public void mouseMoved(MouseEvent e) {
 		clearMouseLayer();
 		if(currentTool==PAINT_TOOL){
-			Painting p = (Painting)(items.get(items.size()-1));
-			permLayer.getGraphics().drawImage(p.getImage(), 0, 0, null);
 			mouseLayer.getGraphics().drawImage(brush.brushImage, e.getX()-75, e.getY()-75, null);
 		}
 		repaint();
@@ -189,4 +190,6 @@ class RulerPanel extends JPanel{
 		double zoom = c.cp.zoom;
 	}
 }
+
+
 
