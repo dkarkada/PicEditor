@@ -35,7 +35,8 @@ class Canvas extends JPanel{
 public class CanvasPanel extends JPanel implements MouseListener, MouseMotionListener{
 	Canvas c;
 	int currentTool;
-	ArrayList<Drawable> items;
+	ArrayList<Drawable> items = new ArrayList<Drawable>();
+	CommandStack<Command> cmdStack = new CommandStack<Command>(25);
 	BrushPanel.Brush brush;
 	BufferedImage permLayer, selectedLayer, mouseLayer;
 	boolean updatePerm, updateSelected;
@@ -48,7 +49,6 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 		c=canv;
 		setBorder(BorderFactory.createMatteBorder(0,0,3,3,Color.DARK_GRAY));
 		
-		items = new ArrayList<Drawable>();
 		startx=starty=0;
 		zoom=1.0;
 		
@@ -75,6 +75,13 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 		g.drawImage(permLayer, 0, 0, null);
 		g.drawImage(selectedLayer, 0, 0, null);
 		g.drawImage(mouseLayer, 0, 0, null);
+	}
+	public void undo(){
+		if(!(cmdStack.isEmpty())){
+			Command c = cmdStack.pop();
+			c.undo();
+			repaint();
+		}
 	}
 	public void changeZoom(double z){
 		zoom=z;
@@ -127,8 +134,7 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 			if(!(items.get(items.size()-1) instanceof Painting))
 				items.add(new Painting(brush,0,0));
 			Painting p = (Painting)(items.get(items.size()-1));
-			p.addStroke(this);
-			p.addPoint(e.getX(), e.getY());
+			cmdStack.add(new PaintStrokeCommand(p, e, this));
 			mouseLayer.getGraphics().drawImage(p.getImage(), 0, 0, null);
 		}
 		repaint();

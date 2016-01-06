@@ -70,6 +70,8 @@ class MainPanel extends JPanel implements MouseListener, ActionListener, KeyList
 			ctrlKey=true;
 		if(e.getKeyCode()==KeyEvent.VK_SHIFT)
 			shiftKey=true;
+		if(e.getKeyCode()==KeyEvent.VK_Z && ctrlKey)
+			c.cp.undo();
 	}
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode()==KeyEvent.VK_CONTROL)

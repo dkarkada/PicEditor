@@ -74,25 +74,33 @@ class ImageItem extends Drawable{
 
 
 class Painting extends Drawable{
-	PaintStroke stroke;
+	ArrayList<PaintStroke> strokes;
 	BrushPanel.Brush brush;
 	BufferedImage paintingImage;
 	
 	public Painting(BrushPanel.Brush br, int xval, int yval){
 		super(xval,yval);
 		brush = br;
+		strokes = new ArrayList<PaintStroke>();
 	}
 	public void addStroke(CanvasPanel cp){
-		stroke = new PaintStroke(cp, brush);
+		strokes.add(new PaintStroke(cp, brush));
+	}
+	public void removeStroke(){
+		strokes.remove(strokes.size()-1);
 	}
 	public void addPoint(int x, int y){
-		stroke.addPoint(x, y);
+		strokes.get(strokes.size()-1).addPoint(x, y);
 	}
 	public void completeStroke(){
-		BufferedImage strokeImage = stroke.complete();
+		BufferedImage strokeImage = strokes.get(strokes.size()-1).complete();
 		paintingImage = strokeImage;
 	}
+	public void redrawImage(){
+		
+	}
 	public BufferedImage getImage(){
+		PaintStroke stroke = strokes.get(strokes.size()-1);
 		return stroke!=null ? stroke.getImage() : null;
 	}
 
@@ -149,21 +157,24 @@ class Painting extends Drawable{
 			return strokeImage;
 		}
 		public BufferedImage complete(){
-	/*		int left=0, right=strokeImage.getWidth(),
-					top=0, bottom=strokeImage.getHeight();
-			boolean done=false;
+			int right=0, left=strokeImage.getWidth(),
+					bottom=0, top=strokeImage.getHeight();
 			int c=0, r=0;
-			while(!done && c<strokeImage.getWidth()){
-				for(r=0; r<strokeImage.getHeight(); r++)
-					if(strokeImage.getRGB(c,r)!=0) done =true;
-				if(done) left=c;
-				else c++;
+			for(c=0; c<strokeImage.getWidth(); c++){
+				for(r=0; r<strokeImage.getHeight(); r++){
+					boolean isPainted = strokeImage.getRGB(c,r)!=0;
+					if(r<top && isPainted)
+						top=r;
+					if(r>bottom && isPainted)
+						bottom=r;
+					if(c<left && isPainted)
+						left=c;
+					if(c>right && isPainted)
+						right=c+1;
+				}
 			}
-			c=0; r=0; done=false;
-			System.out.println(left);
-			//for(int row=0; row<strokeImage.getWidth(); row++)
-			//BufferedImage completedImage = new BufferedImage(width,height,BufferedImage.TYPE_4BYTE_ABGR);
-	*/		return strokeImage;
+			//strokeImage = strokeImage.getSubimage(left, top, right-left, bottom-top);
+			return strokeImage;
 		}
 	}
 }
